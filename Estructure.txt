@@ -1,0 +1,41 @@
+qualitative-ai-analyzer/
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── main.py                   # Punto de entrada FastAPI
+│   │   ├── api/                      # Endpoints de la API
+│   │   │   ├── __init__.py
+│   │   │   ├── routes.py
+│   │   ├── core/                     # Configuración central
+│   │   │   ├── __init__.py
+│   │   │   ├── config.py             # Variables de configuración
+│   │   │   ├── security.py           # Gestión de API keys y autenticación
+│   │   ├── services/                 # Lógica de negocio
+│   │   │   ├── __init__.py
+│   │   │   ├── deepseek_service.py   # Integración con DeepSeek
+│   │   │   ├── document_processor.py # Procesamiento de documentos
+│   │   │   ├── analysis_service.py   # Análisis de texto
+│   │   │   ├── visualization.py      # Generación de visualizaciones
+│   │   ├── models/                   # Modelos de datos
+│   │   │   ├── __init__.py
+│   │   │   ├── document.py
+│   │   │   ├── analysis.py
+│   ├── tests/                        # Tests unitarios y de integración
+│   ├── requirements.txt              # Dependencias Python
+│   ├── .env.example                  # Plantilla para variables de entorno
+│   ├── Dockerfile                    # Para containerización
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/               # Componentes de UI
+│   │   ├── services/                 # Servicios para comunicación con backend
+│   │   ├── styles/                   # CSS/SCSS
+│   │   ├── utils/                    # Utilidades
+│   │   ├── App.js                    # Componente principal
+│   │   ├── index.js                  # Punto de entrada
+│   ├── package.json                  # Dependencias de frontend
+│   ├── .env.example
+│   ├── Dockerfile
+├── docker-compose.yml                # Orquestación de servicios
+├── README.md                         # Documentación
+└── .gitignore

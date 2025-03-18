@@ -1,0 +1,155 @@
+### **Resumen del Software: "Qualitative AI Analyzer"**
+
+El software **"Qualitative AI Analyzer"** es una herramienta diseñada para optimizar el análisis e interpretación de datos cualitativos mediante inteligencia artificial (IA). Su arquitectura modular y escalable permite procesar documentos, realizar análisis avanzados y generar visualizaciones interactivas. A continuación, se detalla su diseño, funcionalidades y características principales, incluyendo la integración del **API Key** proporcionado.
+
+---
+
+### **1. Funcionalidades Principales**
+El software está diseñado para cumplir con las siguientes funcionalidades clave:
+
+#### **a. Procesamiento de Documentos**
+- **Formatos soportados**: PDF, Word, Excel y otros formatos comunes.
+- **Extracción de texto**: Procesamiento automatizado para extraer contenido textual de los documentos cargados.
+- **Preprocesamiento**: Limpieza y normalización del texto para su análisis posterior.
+
+#### **b. Análisis de Datos Cualitativos**
+- **Integración con DeepSeek**: Utiliza la API de DeepSeek para realizar análisis avanzados de texto, como categorización, codificación y síntesis de datos.
+- **Identificación de patrones**: Reconocimiento de temas, relaciones y patrones en los datos cualitativos.
+- **Triangulación de datos**: Comparación de múltiples fuentes para aumentar la validez y confiabilidad de los resultados.
+
+#### **c. Generación de Visualizaciones**
+- **Gráficos**: Barras, líneas, diagramas de dispersión, entre otros.
+- **Mapas mentales**: Representación visual de conceptos y relaciones.
+- **Resumen visual**: Tablas y diagramas interactivos para facilitar la interpretación de los resultados.
+
+#### **d. Interacción Dinámica**
+- **Chatbot**: Permite a los usuarios interactuar con el sistema mediante preguntas basadas en los documentos cargados.
+- **Respuestas personalizadas**: Generación de respuestas basadas en el contenido analizado.
+
+#### **e. Gestión de Usuarios y Seguridad**
+- **Autenticación**: Uso de API keys para garantizar la seguridad en el acceso.
+- **Control de acceso**: Gestión de permisos para diferentes tipos de usuarios.
+
+#### **f. Escalabilidad y Portabilidad**
+- **Docker**: Uso de contenedores para garantizar la portabilidad y facilidad de despliegue.
+- **Orquestación**: Configuración mediante `docker-compose` para gestionar los servicios del backend y frontend.
+
+---
+
+### **2. Diseño del Software**
+El software está dividido en dos componentes principales: **backend** y **frontend**, con una estructura clara y modular.
+
+#### **a. Backend**
+El backend está desarrollado en **Python** utilizando **FastAPI** como framework principal. Sus responsabilidades incluyen:
+- **Procesamiento de documentos**: Extracción y preprocesamiento de texto.
+- **Integración con DeepSeek**: Comunicación con la API para realizar análisis avanzados.
+- **Generación de visualizaciones**: Creación de gráficos y mapas mentales.
+- **Gestión de seguridad**: Autenticación mediante API keys.
+
+**Estructura del Backend**:
+- **`app/`**: Contiene la lógica principal del backend.
+  - **`api/routes.py`**: Define los endpoints para interactuar con el sistema.
+  - **`services/`**: Implementa la lógica de negocio, como el procesamiento de documentos y la integración con DeepSeek.
+  - **`models/`**: Define los modelos de datos utilizados en el sistema.
+  - **`core/`**: Configuración central, incluyendo variables de entorno y seguridad.
+- **`tests/`**: Incluye pruebas unitarias y de integración para garantizar la calidad del software.
+- **`Dockerfile`**: Permite la containerización del backend.
+
+#### **b. Frontend**
+El frontend está desarrollado en **React.js**, proporcionando una interfaz de usuario (UI) moderna, dinámica y fácil de usar. Sus responsabilidades incluyen:
+- **Carga de documentos**: Permitir a los usuarios subir archivos para su análisis.
+- **Visualización de resultados**: Mostrar gráficos, mapas mentales y resúmenes interactivos.
+- **Interacción con el chatbot**: Facilitar la comunicación entre el usuario y el sistema.
+
+**Estructura del Frontend**:
+- **`components/`**: Contiene los componentes reutilizables de la UI.
+- **`services/`**: Maneja la comunicación con el backend.
+- **`styles/`**: Archivos CSS/SCSS para el diseño visual.
+- **`App.js`**: Componente principal que organiza la estructura de la aplicación.
+- **`Dockerfile`**: Permite la containerización del frontend.
+
+---
+
+### **3. Integración del API Key**
+El **API Key** proporcionado (`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`) se utiliza para autenticar las solicitudes a la API de DeepSeek. A continuación, se muestra un ejemplo de cómo se integra en el backend:
+
+```python
+import requests
+import json
+
+# Configuración de la API
+API_KEY = "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"
+API_URL = "https://api.deepseek.com/v1/analyze"
+
+def analyze_with_deepseek(text):
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "text": text,
+        "parameters": {
+            "task": "analysis",  # Cambiar según la tarea específica
+            "language": "es"
+        }
+    }
+    response = requests.post(API_URL, headers=headers, data=json.dumps(data))
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {"error": response.text}
+```
+
+---
+
+### **4. Interfaz de Usuario (UI)**
+La interfaz está diseñada para ser intuitiva y visualmente atractiva, con las siguientes características:
+- **Panel de carga de documentos**: Una sección donde los usuarios pueden arrastrar y soltar archivos o seleccionarlos desde su dispositivo.
+- **Panel de resultados**: Muestra gráficos, mapas mentales y resúmenes generados a partir del análisis.
+- **Chatbot interactivo**: Una ventana de chat donde los usuarios pueden hacer preguntas relacionadas con los documentos cargados.
+- **Menú de navegación**: Acceso rápido a diferentes secciones, como "Cargar Documentos", "Resultados", "Configuración" y "Ayuda".
+
+---
+
+### **5. Flujo de Trabajo**
+1. **Carga de documentos**:
+   - El usuario sube uno o varios documentos a través de la interfaz.
+   - El backend procesa los documentos y extrae el texto.
+2. **Análisis de datos**:
+   - El texto se envía a DeepSeek para su análisis.
+   - Los resultados se almacenan y procesan para generar visualizaciones.
+3. **Interacción con el chatbot**:
+   - El usuario puede hacer preguntas relacionadas con los documentos.
+   - El chatbot responde utilizando los datos analizados.
+4. **Visualización de resultados**:
+   - Los gráficos y mapas mentales se presentan en la interfaz.
+   - El usuario puede descargar los resultados o compartirlos.
+
+---
+
+### **6. Tecnologías Utilizadas**
+- **Backend**:
+  - **FastAPI**: Framework para construir APIs rápidas y eficientes.
+  - **Python**: Lenguaje principal para la lógica del backend.
+  - **DeepSeek API**: Para análisis avanzado de texto.
+  - **Bibliotecas**: `matplotlib`, `networkx`, `PyPDF2`, `python-docx`, `pandas`.
+- **Frontend**:
+  - **React.js**: Framework para construir la interfaz de usuario.
+  - **CSS/SCSS**: Para el diseño visual.
+- **Infraestructura**:
+  - **Docker**: Para la containerización del backend y frontend.
+  - **docker-compose**: Para orquestar los servicios.
+
+---
+
+### **7. Documentación**
+El proyecto incluye un archivo `README.md` que detalla:
+- **Instrucciones de instalación**: Cómo configurar y ejecutar el software utilizando Docker.
+- **Guía de uso**: Pasos para cargar documentos, realizar análisis y visualizar resultados.
+- **Estructura del proyecto**: Descripción de los directorios y archivos principales.
+- **Contribución**: Cómo colaborar en el desarrollo del software.
+
+---
+
+### **8. Conclusión**
+El software **"Qualitative AI Analyzer"** es una solución robusta y versátil que combina análisis cualitativo avanzado con una interfaz intuitiva. Su diseño modular y su integración con tecnologías modernas lo convierten en una herramienta ideal para investigadores que buscan optimizar el análisis de datos cualitativos. La integración del **API Key** asegura una conexión segura y eficiente con DeepSeek, maximizando el potencial del sistema.
