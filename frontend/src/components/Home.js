@@ -1,80 +1,199 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../styles/Home.css';
 
-const Home = () => {
+function Home() {
+  // Definición de estilos
+  const styles = {
+    home: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '2rem',
+      maxWidth: '1200px',
+      margin: '0 auto',
+      minHeight: '90vh',
+      background: 'linear-gradient(to bottom, #f8f9fa, #e9ecef)',
+      borderRadius: '15px',
+      boxShadow: '0 10px 30px rgba(0, 0, 0, 0.05)',
+      fontFamily: "'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+    },
+    header: {
+      textAlign: 'center',
+      marginBottom: '3rem',
+      color: '#2c3e50'
+    },
+    title: {
+      fontSize: '2.8rem',
+      marginBottom: '1rem',
+      background: 'linear-gradient(45deg, #3498db, #8e44ad)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      fontWeight: '700'
+    },
+    subtitle: {
+      fontSize: '1.2rem',
+      color: '#7f8c8d',
+      maxWidth: '700px',
+      lineHeight: '1.6',
+      marginBottom: '2rem'
+    },
+    features: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      gap: '2rem',
+      marginBottom: '3rem',
+      width: '100%'
+    },
+    feature: {
+      flex: '1 1 300px',
+      padding: '2rem',
+      borderRadius: '12px',
+      background: 'white',
+      boxShadow: '0 5px 15px rgba(0, 0, 0, 0.05)',
+      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+      textAlign: 'center',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '220px',
+      border: '1px solid rgba(0, 0, 0, 0.05)'
+    },
+    featureHover: {
+      transform: 'translateY(-5px)',
+      boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)'
+    },
+    featureIcon: {
+      fontSize: '2.5rem',
+      marginBottom: '1rem',
+      color: '#3498db'
+    },
+    featureTitle: {
+      fontSize: '1.5rem',
+      fontWeight: '600',
+      marginBottom: '1rem',
+      color: '#2c3e50'
+    },
+    featureText: {
+      fontSize: '1rem',
+      color: '#7f8c8d',
+      lineHeight: '1.5'
+    },
+    ctaButtons: {
+      display: 'flex',
+      gap: '1.5rem',
+      marginTop: '1rem',
+      flexWrap: 'wrap',
+      justifyContent: 'center'
+    },
+    btnPrimary: {
+      padding: '0.8rem 2rem',
+      backgroundColor: '#3498db',
+      color: 'white',
+      borderRadius: '30px',
+      textDecoration: 'none',
+      fontWeight: '600',
+      fontSize: '1.1rem',
+      transition: 'all 0.3s ease',
+      boxShadow: '0 4px 15px rgba(52, 152, 219, 0.3)',
+      border: 'none',
+      cursor: 'pointer',
+      display: 'inline-block'
+    },
+    btnSecondary: {
+      padding: '0.8rem 2rem',
+      backgroundColor: 'white',
+      color: '#3498db',
+      borderRadius: '30px',
+      textDecoration: 'none',
+      fontWeight: '600',
+      fontSize: '1.1rem',
+      transition: 'all 0.3s ease',
+      boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+      border: '1px solid #3498db',
+      cursor: 'pointer',
+      display: 'inline-block'
+    },
+    btnHover: {
+      transform: 'translateY(-3px)',
+      boxShadow: '0 6px 20px rgba(52, 152, 219, 0.4)'
+    }
+  };
+
+  // Función para manejar el hover de los elementos
+  const handleMouseEnter = (e, hoverStyle) => {
+    Object.keys(hoverStyle).forEach(key => {
+      e.currentTarget.style[key] = hoverStyle[key];
+    });
+  };
+
+  const handleMouseLeave = (e, defaultStyle) => {
+    Object.keys(defaultStyle).forEach(key => {
+      e.currentTarget.style[key] = defaultStyle[key];
+    });
+  };
+
   return (
-    <div className="home-container">
-      <section className="hero-section">
-        <h1>Análisis Cualitativo Potenciado por IA</h1>
-        <p className="hero-description">
-          Descubre insights profundos en tus documentos y textos utilizando 
-          tecnología avanzada de inteligencia artificial.
-        </p>
-        <div className="cta-buttons">
-          <Link to="/upload" className="cta-button primary">Subir Documento</Link>
-          <Link to="/analyze" className="cta-button secondary">Analizar Texto</Link>
-        </div>
-      </section>
+    <div style={styles.home}>
+      <div style={styles.header}>
+        <h1 style={styles.title}>Bienvenido a Qualitative AI Analyzer</h1>
+        <p style={styles.subtitle}>Una herramienta avanzada para el análisis cualitativo de textos utilizando inteligencia artificial, diseñada para investigadores y profesionales.</p>
+      </div>
       
-      <section className="features-section">
-        <h2>Características Principales</h2>
-        <div className="features-grid">
-          <div className="feature-card">
-            <div className="feature-icon">📄</div>
-            <h3>Análisis de Documentos</h3>
-            <p>Procesa documentos en múltiples formatos (PDF, DOCX, TXT, CSV, JSON)</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">🔍</div>
-            <h3>Análisis Temático</h3>
-            <p>Identifica y clasifica temas principales en el texto</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">😊</div>
-            <h3>Análisis de Sentimiento</h3>
-            <p>Detecta emociones, tono y polaridad en el contenido</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">💬</div>
-            <h3>Análisis de Discurso</h3>
-            <p>Examina estructuras argumentativas y recursos retóricos</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">📊</div>
-            <h3>Visualizaciones</h3>
-            <p>Genera visualizaciones interactivas de los resultados</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">🤖</div>
-            <h3>IA Avanzada</h3>
-            <p>Utiliza modelos de lenguaje de última generación</p>
-          </div>
+      <div style={styles.features}>
+        <div 
+          style={styles.feature}
+          onMouseEnter={(e) => handleMouseEnter(e, styles.featureHover)}
+          onMouseLeave={(e) => handleMouseLeave(e, styles.feature)}
+        >
+          <div style={styles.featureIcon}>🔍</div>
+          <h2 style={styles.featureTitle}>Análisis de Sentimiento</h2>
+          <p style={styles.featureText}>Descubre la polaridad emocional de tus textos con precisión y detalle.</p>
         </div>
-      </section>
+        
+        <div 
+          style={styles.feature}
+          onMouseEnter={(e) => handleMouseEnter(e, styles.featureHover)}
+          onMouseLeave={(e) => handleMouseLeave(e, styles.feature)}
+        >
+          <div style={styles.featureIcon}>🏢</div>
+          <h2 style={styles.featureTitle}>Extracción de Entidades</h2>
+          <p style={styles.featureText}>Identifica personas, lugares, organizaciones y más en tus documentos.</p>
+        </div>
+        
+        <div 
+          style={styles.feature}
+          onMouseEnter={(e) => handleMouseEnter(e, styles.featureHover)}
+          onMouseLeave={(e) => handleMouseLeave(e, styles.feature)}
+        >
+          <div style={styles.featureIcon}>🔑</div>
+          <h2 style={styles.featureTitle}>Palabras Clave</h2>
+          <p style={styles.featureText}>Extrae los términos más relevantes para comprender la esencia de tus textos.</p>
+        </div>
+      </div>
       
-      <section className="how-it-works">
-        <h2>Cómo Funciona</h2>
-        <div className="steps">
-          <div className="step">
-            <div className="step-number">1</div>
-            <h3>Sube tu Documento</h3>
-            <p>Sube un documento o ingresa texto directamente para análisis</p>
-          </div>
-          <div className="step">
-            <div className="step-number">2</div>
-            <h3>Selecciona el Tipo de Análisis</h3>
-            <p>Elige entre análisis general, temático, de sentimiento o de discurso</p>
-          </div>
-          <div className="step">
-            <div className="step-number">3</div>
-            <h3>Explora los Resultados</h3>
-            <p>Visualiza y explora los insights generados por la IA</p>
-          </div>
-        </div>
-      </section>
+      <div style={styles.ctaButtons}>
+        <Link 
+          to="/upload" 
+          style={styles.btnPrimary}
+          onMouseEnter={(e) => handleMouseEnter(e, styles.btnHover)}
+          onMouseLeave={(e) => handleMouseLeave(e, styles.btnPrimary)}
+        >
+          Subir Documento
+        </Link>
+        <Link 
+          to="/analyze" 
+          style={styles.btnSecondary}
+          onMouseEnter={(e) => handleMouseEnter(e, styles.btnHover)}
+          onMouseLeave={(e) => handleMouseLeave(e, styles.btnSecondary)}
+        >
+          Analizar Texto
+        </Link>
+      </div>
     </div>
   );
-};
+}
 
 export default Home;

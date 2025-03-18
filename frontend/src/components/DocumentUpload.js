@@ -1,143 +1,281 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useDropzone } from 'react-dropzone';
-import { uploadDocument } from '../utils/api';
-import '../styles/DocumentUpload.css';
 
-const DocumentUpload = () => {
+function DocumentUpload() {
   const [file, setFile] = useState(null);
-  const [documentType, setDocumentType] = useState('');
-  const [isUploading, setIsUploading] = useState(false);
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const [uploading, setUploading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [dragActive, setDragActive] = useState(false);
 
-  // Configuración de react-dropzone
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: {
-      'application/pdf': ['.pdf'],
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
-      'text/plain': ['.txt'],
-      'text/csv': ['.csv'],
-      'application/json': ['.json']
+  const styles = {
+    container: {
+      maxWidth: '800px',
+      margin: '2rem auto',
+      padding: '2rem',
+      backgroundColor: 'white',
+      borderRadius: '15px',
+      boxShadow: '0 5px 20px rgba(0, 0, 0, 0.05)',
+      fontFamily: "'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
     },
-    maxFiles: 1,
-    onDrop: acceptedFiles => {
-      if (acceptedFiles.length > 0) {
-        setFile(acceptedFiles[0]);
-        
-        // Detectar tipo de documento automáticamente
-        const fileName = acceptedFiles[0].name.toLowerCase();
-        if (fileName.endsWith('.pdf')) {
-          setDocumentType('pdf');
-        } else if (fileName.endsWith('.docx')) {
-          setDocumentType('docx');
-        } else if (fileName.endsWith('.txt')) {
-          setDocumentType('txt');
-        } else if (fileName.endsWith('.csv')) {
-          setDocumentType('csv');
-        } else if (fileName.endsWith('.json')) {
-          setDocumentType('json');
-        }
-        
-        setError('');
-      }
+    title: {
+      fontSize: '2.2rem',
+      color: '#2c3e50',
+      marginBottom: '1rem',
+      textAlign: 'center',
+      fontWeight: '700'
+    },
+    subtitle: {
+      fontSize: '1.1rem',
+      color: '#7f8c8d',
+      marginBottom: '2rem',
+      textAlign: 'center',
+      lineHeight: '1.6'
+    },
+    form: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '1.5rem'
+    },
+    formGroup: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '0.5rem'
+    },
+    label: {
+      fontSize: '1.1rem',
+      color: '#2c3e50',
+      fontWeight: '600'
+    },
+    dropzone: {
+      border: '2px dashed #3498db',
+      borderRadius: '10px',
+      padding: '2rem',
+      textAlign: 'center',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      backgroundColor: '#f8fafc'
+    },
+    dropzoneActive: {
+      backgroundColor: '#ebf5ff',
+      borderColor: '#2980b9'
+    },
+    dropzoneText: {
+      fontSize: '1.1rem',
+      color: '#7f8c8d',
+      marginBottom: '1rem'
+    },
+    fileInput: {
+      display: 'none'
+    },
+    browseButton: {
+      display: 'inline-block',
+      padding: '0.5rem 1rem',
+      backgroundColor: '#3498db',
+      color: 'white',
+      borderRadius: '5px',
+      fontWeight: '600',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease'
+    },
+    fileInfo: {
+      backgroundColor: '#f1f9fe',
+      padding: '1rem',
+      borderRadius: '8px',
+      marginTop: '1rem'
+    },
+    fileInfoText: {
+      margin: '0.3rem 0',
+      color: '#2c3e50'
+    },
+    fileName: {
+      fontWeight: '600',
+      color: '#3498db'
+    },
+    submitButton: {
+      padding: '0.8rem',
+      backgroundColor: '#3498db',
+      color: 'white',
+      border: 'none',
+      borderRadius: '8px',
+      fontSize: '1.1rem',
+      fontWeight: '600',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      marginTop: '1rem',
+      boxShadow: '0 4px 6px rgba(52, 152, 219, 0.2)'
+    },
+    submitButtonHover: {
+      backgroundColor: '#2980b9',
+      transform: 'translateY(-2px)',
+      boxShadow: '0 6px 8px rgba(52, 152, 219, 0.3)'
+    },
+    submitButtonDisabled: {
+      backgroundColor: '#bdc3c7',
+      cursor: 'not-allowed',
+      transform: 'none',
+      boxShadow: 'none'
+    },
+    message: {
+      padding: '1rem',
+      borderRadius: '8px',
+      marginTop: '1rem',
+      textAlign: 'center',
+      fontWeight: '500'
+    },
+    successMessage: {
+      backgroundColor: '#d4edda',
+      color: '#155724'
+    },
+    errorMessage: {
+      backgroundColor: '#f8d7da',
+      color: '#721c24'
+    },
+    uploadIcon: {
+      fontSize: '3rem',
+      color: '#3498db',
+      marginBottom: '1rem'
     }
-  });
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setMessage('');
+    }
+  };
+
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setFile(e.dataTransfer.files[0]);
+      setMessage('');
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!file) {
-      setError('Por favor selecciona un archivo');
+      setMessage('Por favor selecciona un archivo');
       return;
     }
     
-    if (!documentType) {
-      setError('Por favor selecciona el tipo de documento');
-      return;
-    }
+    setUploading(true);
     
-    try {
-      setIsUploading(true);
-      setError('');
-      
-      const response = await uploadDocument(file, documentType);
-      
-      // Redirigir a la página de análisis con el ID del documento
-      navigate(`/analyze?documentId=${response.id}`);
-      
-    } catch (err) {
-      console.error('Error al subir documento:', err);
-      setError(err.response?.data?.detail || 'Error al subir el documento');
-    } finally {
-      setIsUploading(false);
+    // Aquí iría la lógica para subir el archivo al servidor
+    // Por ahora solo simulamos una carga
+    setTimeout(() => {
+      setUploading(false);
+      setMessage('Archivo subido con éxito');
+      setFile(null);
+    }, 2000);
+  };
+
+  const handleButtonHover = (e, isDisabled) => {
+    if (!isDisabled) {
+      e.currentTarget.style.backgroundColor = styles.submitButtonHover.backgroundColor;
+      e.currentTarget.style.transform = styles.submitButtonHover.transform;
+      e.currentTarget.style.boxShadow = styles.submitButtonHover.boxShadow;
+    }
+  };
+
+  const handleButtonLeave = (e, isDisabled) => {
+    if (!isDisabled) {
+      e.currentTarget.style.backgroundColor = styles.submitButton.backgroundColor;
+      e.currentTarget.style.transform = 'translateY(0)';
+      e.currentTarget.style.boxShadow = styles.submitButton.boxShadow;
     }
   };
 
   return (
-    <div className="document-upload-container">
-      <h1>Subir Documento</h1>
+    <div style={styles.container}>
+      <h1 style={styles.title}>Subir Documento</h1>
+      <p style={styles.subtitle}>Sube un documento para analizarlo con nuestra herramienta de IA. Aceptamos archivos en formato .txt, .pdf, .doc y .docx.</p>
       
-      <div className="upload-section">
-        <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} style={styles.form}>
+        <div style={styles.formGroup}>
+          <label htmlFor="document" style={styles.label}>Selecciona un archivo:</label>
+          
           <div 
-            {...getRootProps()} 
-            className={`dropzone ${isDragActive ? 'active' : ''} ${file ? 'has-file' : ''}`}
+            style={{
+              ...styles.dropzone,
+              ...(dragActive ? styles.dropzoneActive : {})
+            }}
+            onDragEnter={handleDrag}
+            onDragOver={handleDrag}
+            onDragLeave={handleDrag}
+            onDrop={handleDrop}
+            onClick={() => document.getElementById('document').click()}
           >
-            <input {...getInputProps()} />
-            {file ? (
-              <div className="file-info">
-                <p className="file-name">{file.name}</p>
-                <p className="file-size">{(file.size / 1024).toFixed(2)} KB</p>
-              </div>
-            ) : (
-              <div className="dropzone-content">
-                <p>Arrastra un archivo aquí o haz clic para seleccionar</p>
-                <p className="dropzone-hint">Formatos soportados: PDF, DOCX, TXT, CSV, JSON</p>
-              </div>
-            )}
+            <div style={styles.uploadIcon}>📄</div>
+            <p style={styles.dropzoneText}>
+              Arrastra y suelta tu archivo aquí, o
+            </p>
+            <span style={styles.browseButton}>Buscar archivo</span>
+            <input 
+              type="file" 
+              id="document" 
+              onChange={handleFileChange}
+              accept=".txt,.pdf,.doc,.docx"
+              style={styles.fileInput}
+            />
           </div>
-          
-          <div className="document-type-selector">
-            <label htmlFor="document-type">Tipo de Documento:</label>
-            <select 
-              id="document-type" 
-              value={documentType} 
-              onChange={(e) => setDocumentType(e.target.value)}
-              required
-            >
-              <option value="">Seleccionar tipo...</option>
-              <option value="pdf">PDF</option>
-              <option value="docx">DOCX</option>
-              <option value="txt">TXT</option>
-              <option value="csv">CSV</option>
-              <option value="json">JSON</option>
-            </select>
+        </div>
+        
+        {file && (
+          <div style={styles.fileInfo}>
+            <p style={styles.fileInfoText}>
+              Archivo seleccionado: <span style={styles.fileName}>{file.name}</span>
+            </p>
+            <p style={styles.fileInfoText}>
+              Tamaño: {(file.size / 1024).toFixed(2)} KB
+            </p>
+            <p style={styles.fileInfoText}>
+              Tipo: {file.type || 'Desconocido'}
+            </p>
           </div>
-          
-          {error && <div className="error-message">{error}</div>}
-          
-          <button 
-            type="submit" 
-            className="upload-button"
-            disabled={isUploading || !file}
-          >
-            {isUploading ? 'Subiendo...' : 'Subir Documento'}
-          </button>
-        </form>
-      </div>
+        )}
+        
+        <button 
+          type="submit" 
+          style={{
+            ...styles.submitButton,
+            ...(!file || uploading ? styles.submitButtonDisabled : {})
+          }}
+          disabled={!file || uploading}
+          onMouseEnter={(e) => handleButtonHover(e, !file || uploading)}
+          onMouseLeave={(e) => handleButtonLeave(e, !file || uploading)}
+        >
+          {uploading ? 'Subiendo...' : 'Subir Documento'}
+        </button>
+      </form>
       
-      <div className="upload-instructions">
-        <h2>Instrucciones</h2>
-        <ul>
-          <li>Selecciona un archivo en formato PDF, DOCX, TXT, CSV o JSON.</li>
-          <li>El tamaño máximo permitido es de 10 MB.</li>
-          <li>Asegúrate de que el documento contenga texto que pueda ser extraído.</li>
-          <li>Una vez subido, serás redirigido a la página de análisis.</li>
-        </ul>
-      </div>
+      {message && (
+        <div 
+          style={{
+            ...styles.message,
+            ...(message === 'Archivo subido con éxito' ? styles.successMessage : styles.errorMessage)
+          }}
+        >
+          {message}
+        </div>
+      )}
     </div>
   );
-};
+}
 
 export default DocumentUpload;
