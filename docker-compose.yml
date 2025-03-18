@@ -4,7 +4,7 @@ services:
   backend:
     build: ./backend
     ports:
-      - "8000:8000"
+      - "5000:8000"  # Cambiado de 8000:8000 a 5000:8000
     volumes:
       - ./backend:/app
     env_file:
@@ -15,10 +15,7 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "3000:80"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - "4000:80"  # Cambiado de 3000:80 a 4000:80
     depends_on:
       - backend
     restart: unless-stopped

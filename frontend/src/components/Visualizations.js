@@ -1,221 +1,217 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getVisualization } from '../utils/api';
-import '../styles/Visualizations.css';
 
-// Componente de visualización (en una implementación real usarías bibliotecas como D3, Chart.js, etc.)
-const VisualizationPlaceholder = ({ type, data }) => {
-  return (
-    <div className="visualization-placeholder">
-      <h3>{data.title || `Visualización de ${type}`}</h3>
-      <div className="placeholder-content">
-        <p>Aquí se mostraría la visualización de tipo: {type}</p>
-        <pre className="data-preview">{JSON.stringify(data, null, 2).substring(0, 200)}...</pre>
-      </div>
-    </div>
-  );
-};
-
-const Visualizations = () => {
+function Visualizations() {
   const { analysisId } = useParams();
-  const [visualizations, setVisualizations] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [activeViz, setActiveViz] = useState('word_cloud');
-
-  // En una implementación real, harías peticiones para obtener las visualizaciones
-  useEffect(() => {
-    const fetchVisualizations = async () => {
-      try {
-        setLoading(true);
-        
-        // Simulación de carga de datos
-        // En una implementación real, harías peticiones a la API para cada tipo de visualización
-        setTimeout(() => {
-          // Datos de ejemplo
-          const mockVisualizations = {
-            word_cloud: {
-              type: 'word_cloud',
-              data: [
-                { text: 'Economía', value: 30 },
-                { text: 'Política', value: 25 },
-                { text: 'Medio ambiente', value: 20 },
-                { text: 'Desarrollo', value: 15 },
-                { text: 'Sostenibilidad', value: 12 }
-              ],
-              title: 'Nube de Palabras - Análisis General'
-            },
-            sentiment_chart: {
-              type: 'sentiment_chart',
-              data: {
-                labels: ['Polaridad', 'Preocupación', 'Esperanza'],
-                datasets: [{
-                  label: 'Sentimiento',
-                  data: [60, 70, 50],
-                  backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)']
-                }]
-              },
-              title: 'Análisis de Sentimiento'
-            },
-            theme_network: {
-              type: 'theme_network',
-              data: {
-                nodes: [
-                  { id: 0, name: 'Economía', value: 10, group: 1 },
-                  { id: 1, name: 'Política', value: 10, group: 1 },
-                  { id: 2, name: 'Medio ambiente', value: 10, group: 1 },
-                  { id: '0-0', name: 'Crecimiento económico sostenible...', value: 5, group: 2 },
-                  { id: '1-0', name: 'Políticas públicas para...', value: 5, group: 2 },
-                  { id: '2-0', name: 'Protección de recursos naturales...', value: 5, group: 2 }
-                ],
-                links: [
-                  { source: 0, target: '0-0', value: 1 },
-                  { source: 1, target: '1-0', value: 1 },
-                  { source: 2, target: '2-0', value: 1 }
-                ]
-              },
-              title: 'Red Temática'
-            },
-            summary_dashboard: {
-              type: 'summary_dashboard',
-              title: 'Dashboard de Análisis',
-              key_insights: {
-                summary: 'El texto muestra una preocupación por temas económicos y ambientales, con un tono moderadamente optimista hacia posibles soluciones políticas.',
-                key_points: ['Economía sostenible', 'Políticas ambientales', 'Desarrollo social'],
-                recommendations: [
-                  'Profundizar en los temas principales identificados',
-                  'Considerar un análisis de sentimiento para evaluar la recepción emocional',
-                  'Explorar las relaciones entre los diferentes temas'
-                ]
-              }
-            }
-          };
-          
-          setVisualizations(mockVisualizations);
-          setLoading(false);
-        }, 1500);
-        
-      } catch (err) {
-        console.error('Error al cargar visualizaciones:', err);
-        setError('No se pudieron cargar las visualizaciones');
-        setLoading(false);
-      }
-    };
-
-    fetchVisualizations();
-  }, [analysisId]);
-
-  // Función para renderizar la visualización activa
-  const renderVisualization = () => {
-    if (!visualizations[activeViz]) return null;
-    
-    return <VisualizationPlaceholder type={activeViz} data={visualizations[activeViz]} />;
+  
+  const styles = {
+    container: {
+      maxWidth: '1000px',
+      margin: '2rem auto',
+      padding: '2rem',
+      backgroundColor: 'white',
+      borderRadius: '15px',
+      boxShadow: '0 5px 20px rgba(0, 0, 0, 0.05)',
+      fontFamily: "'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+    },
+    header: {
+      textAlign: 'center',
+      marginBottom: '2rem'
+    },
+    title: {
+      fontSize: '2.2rem',
+      color: '#2c3e50',
+      marginBottom: '0.5rem',
+      fontWeight: '700'
+    },
+    analysisId: {
+      fontSize: '1rem',
+      color: '#7f8c8d',
+      backgroundColor: '#f8f9fa',
+      padding: '0.5rem 1rem',
+      borderRadius: '20px',
+      display: 'inline-block'
+    },
+    section: {
+      marginBottom: '2.5rem',
+      backgroundColor: '#f8fafc',
+      borderRadius: '12px',
+      padding: '1.5rem',
+      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.03)'
+    },
+    sectionTitle: {
+      fontSize: '1.5rem',
+      color: '#2c3e50',
+      marginBottom: '1.5rem',
+      fontWeight: '600',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem'
+    },
+    visualizationIcon: {
+      fontSize: '1.5rem'
+    },
+    visualizationPlaceholder: {
+      backgroundColor: '#f1f9fe',
+      borderRadius: '8px',
+      padding: '3rem',
+      textAlign: 'center',
+      minHeight: '200px',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      border: '2px dashed #bde0fe'
+    },
+    placeholderText: {
+      fontSize: '1.2rem',
+      color: '#3498db',
+      marginBottom: '1rem',
+      fontWeight: '500'
+    },
+    placeholderNote: {
+      fontSize: '0.9rem',
+      color: '#7f8c8d',
+      maxWidth: '500px',
+      margin: '0 auto'
+    },
+    placeholderIcon: {
+      fontSize: '3rem',
+      color: '#3498db',
+      marginBottom: '1rem'
+    },
+    actions: {
+      display: 'flex',
+      justifyContent: 'center',
+      gap: '1rem',
+      marginTop: '2rem'
+    },
+    btnPrimary: {
+      padding: '0.8rem 1.5rem',
+      backgroundColor: '#3498db',
+      color: 'white',
+      borderRadius: '8px',
+      textDecoration: 'none',
+      fontWeight: '600',
+      fontSize: '1rem',
+      transition: 'all 0.3s ease',
+      boxShadow: '0 4px 6px rgba(52, 152, 219, 0.2)',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '0.5rem'
+    },
+    btnSecondary: {
+      padding: '0.8rem 1.5rem',
+      backgroundColor: 'white',
+      color: '#3498db',
+      borderRadius: '8px',
+      textDecoration: 'none',
+      fontWeight: '600',
+      fontSize: '1rem',
+      transition: 'all 0.3s ease',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
+      border: '1px solid #3498db',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '0.5rem'
+    },
+    btnHover: {
+      transform: 'translateY(-2px)',
+      boxShadow: '0 6px 10px rgba(52, 152, 219, 0.3)'
+    },
+    btnIcon: {
+      fontSize: '1.2rem'
+    }
   };
 
-  // Función para renderizar insights del dashboard
-  const renderInsights = () => {
-    if (activeViz !== 'summary_dashboard' || !visualizations.summary_dashboard) return null;
-    
-    const { key_insights } = visualizations.summary_dashboard;
-    
-    return (
-      <div className="insights-container">
-        <div className="insight-section">
-          <h3>Resumen</h3>
-          <p>{key_insights.summary}</p>
-        </div>
-        
-        <div className="insight-section">
-          <h3>Puntos Clave</h3>
-          <ul>
-            {key_insights.key_points.map((point, index) => (
-              <li key={index}>{point}</li>
-            ))}
-          </ul>
-        </div>
-        
-        <div className="insight-section">
-          <h3>Recomendaciones</h3>
-          <ul>
-            {key_insights.recommendations.map((rec, index) => (
-              <li key={index}>{rec}</li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    );
+  const handleButtonHover = (e, isHover) => {
+    if (isHover) {
+      e.currentTarget.style.transform = styles.btnHover.transform;
+      e.currentTarget.style.boxShadow = styles.btnHover.boxShadow;
+    } else {
+      e.currentTarget.style.transform = 'translateY(0)';
+      e.currentTarget.style.boxShadow = e.currentTarget.classList.contains('btn-primary') 
+        ? styles.btnPrimary.boxShadow 
+        : styles.btnSecondary.boxShadow;
+    }
   };
-
-  if (loading) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Cargando visualizaciones...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="error-container">
-        <h2>Error</h2>
-        <p>{error}</p>
-        <Link to={`/results/${analysisId}`} className="back-button">Volver a Resultados</Link>
-      </div>
-    );
-  }
 
   return (
-    <div className="visualizations-container">
-      <div className="visualizations-header">
-        <h1>Visualizaciones</h1>
-        <Link to={`/results/${analysisId}`} className="back-button">
+    <div style={styles.container}>
+      <div style={styles.header}>
+        <h1 style={styles.title}>Visualizaciones</h1>
+        <div style={styles.analysisId}>ID: {analysisId}</div>
+      </div>
+      
+      <div style={styles.section}>
+        <h2 style={styles.sectionTitle}>
+          <span style={styles.visualizationIcon}>☁️</span>
+          Nube de Palabras
+        </h2>
+        <div style={styles.visualizationPlaceholder}>
+          <div style={styles.placeholderIcon}>☁️</div>
+          <p style={styles.placeholderText}>Aquí se mostraría la nube de palabras</p>
+          <p style={styles.placeholderNote}>
+            En una implementación real, aquí se renderizaría un componente de nube de palabras 
+            utilizando react-wordcloud para visualizar las palabras clave y su relevancia.
+          </p>
+        </div>
+      </div>
+      
+      <div style={styles.section}>
+        <h2 style={styles.sectionTitle}>
+          <span style={styles.visualizationIcon}>📊</span>
+          Gráfico de Sentimiento
+        </h2>
+        <div style={styles.visualizationPlaceholder}>
+          <div style={styles.placeholderIcon}>📊</div>
+          <p style={styles.placeholderText}>Aquí se mostraría un gráfico de sentimiento</p>
+          <p style={styles.placeholderNote}>
+            En una implementación real, aquí se renderizaría un gráfico utilizando react-chartjs-2 
+            para visualizar la distribución de sentimientos en el texto analizado.
+          </p>
+        </div>
+      </div>
+      
+      <div style={styles.section}>
+        <h2 style={styles.sectionTitle}>
+          <span style={styles.visualizationIcon}>🔄</span>
+          Red de Entidades
+        </h2>
+        <div style={styles.visualizationPlaceholder}>
+          <div style={styles.placeholderIcon}>🔄</div>
+          <p style={styles.placeholderText}>Aquí se mostraría una red de entidades</p>
+          <p style={styles.placeholderNote}>
+            En una implementación real, aquí se renderizaría un gráfico de red utilizando react-force-graph 
+            para visualizar las relaciones entre las entidades detectadas en el texto.
+          </p>
+        </div>
+      </div>
+      
+      <div style={styles.actions}>
+        <Link 
+          to={`/results/${analysisId}`} 
+          style={styles.btnSecondary}
+          onMouseEnter={(e) => handleButtonHover(e, true)}
+          onMouseLeave={(e) => handleButtonHover(e, false)}
+          className="btn-secondary"
+        >
+          <span style={styles.btnIcon}>📋</span>
           Volver a Resultados
         </Link>
-      </div>
-      
-      <div className="visualization-tabs">
-        <button 
-          className={`viz-tab ${activeViz === 'word_cloud' ? 'active' : ''}`}
-          onClick={() => setActiveViz('word_cloud')}
-          disabled={!visualizations.word_cloud}
+        <Link 
+          to="/analyze" 
+          style={styles.btnPrimary}
+          onMouseEnter={(e) => handleButtonHover(e, true)}
+          onMouseLeave={(e) => handleButtonHover(e, false)}
+          className="btn-primary"
         >
-          Nube de Palabras
-        </button>
-        <button 
-          className={`viz-tab ${activeViz === 'sentiment_chart' ? 'active' : ''}`}
-          onClick={() => setActiveViz('sentiment_chart')}
-          disabled={!visualizations.sentiment_chart}
-        >
-          Gráfico de Sentimiento
-        </button>
-        <button 
-          className={`viz-tab ${activeViz === 'theme_network' ? 'active' : ''}`}
-          onClick={() => setActiveViz('theme_network')}
-          disabled={!visualizations.theme_network}
-        >
-          Red Temática
-        </button>
-        <button 
-          className={`viz-tab ${activeViz === 'summary_dashboard' ? 'active' : ''}`}
-          onClick={() => setActiveViz('summary_dashboard')}
-          disabled={!visualizations.summary_dashboard}
-        >
-          Dashboard
-        </button>
-      </div>
-      
-      <div className="visualization-content">
-        {renderVisualization()}
-        {renderInsights()}
-      </div>
-      
-      <div className="visualization-actions">
-        <button className="export-viz-button">Exportar Visualización</button>
-        <button className="share-button">Compartir</button>
+          <span style={styles.btnIcon}>✏️</span>
+          Nuevo Análisis
+        </Link>
       </div>
     </div>
   );
-};
+}
 
 export default Visualizations;
